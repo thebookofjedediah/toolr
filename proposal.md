@@ -1,8 +1,6 @@
 
 # Project Proposal
 
-  
-
 ### What goal will your website be designed to achieve?
 This site is for users who want to be able to share their tools with the local community. It allows for a user to enter the item(s) that they are willing to lend, and in return see local users who are also willing to lend items.
 
@@ -11,9 +9,9 @@ This application is great for anyone who is in need without being able to shell 
 
 ### What data do you plan on using? You may have not picked your actual API yet, which is fine, just outline what kind of data you would like it to contain.
 I am going to use a maps api, the top contenders are: 
-* Google Maps
-* Mapquest
-* Mapbox
+* [Google Maps](https://developers.google.com/maps/documentation/embed/get-started)
+* [Mapquest](https://developer.mapquest.com/documentation/)
+* [Mapbox](https://docs.mapbox.com/api/)
 
 ### In brief, outline your approach to creating your project (knowing that you may not know everything in advance and that these details might change later). Answer questions like the ones below, but feel free to add more information:
 
@@ -40,8 +38,7 @@ I am going to use a maps api, the top contenders are:
     4. Once signed up, users can search for and see local results of tools in their area
 
 * #### What features make your site more than CRUD? Do you have any stretch goals?
-    * The initial app will be simple: creating and searching tools locally. Some stretch goals are as follows: 
-    <br>
-       1. Prohibiting a user from signing up without adding a tool
-       2. Not allowing a user to remove a tool if they only own one
-       3. Showing a map of "pins" where tools are (roughly) based off their user.
+    The initial app will be simple: creating and searching tools locally. Some stretch goals are as follows: 
+    * Prohibiting a user from signing up without adding a tool
+    * Not allowing a user to remove a tool if they only own one
+    * Showing a map of "pins" where tools are (roughly) based off their user.
