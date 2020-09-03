@@ -42,6 +42,6 @@ I am going to use a maps api, the top contenders are:
 * #### What features make your site more than CRUD? Do you have any stretch goals?
     * The initial app will be simple: creating and searching tools locally. Some stretch goals are as follows: 
     <br>
-    1.  Prohibiting a user from signing up without adding a tool
-    2. Not allowing a user to remove a tool if they only own one
-    3. Showing a map of "pins" where tools are (roughly) based off their user.
+       1. Prohibiting a user from signing up without adding a tool
+       2. Not allowing a user to remove a tool if they only own one
+       3. Showing a map of "pins" where tools are (roughly) based off their user.
