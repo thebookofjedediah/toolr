@@ -1,8 +1,10 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db
+from models import db, connect_db, User
 from dotenv import load_dotenv
+from forms import UserRegistrationForm
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 
@@ -12,7 +14,7 @@ dotenv_path = os.path.join(APP_ROOT, '.env')
 load_dotenv(dotenv_path)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///no-db-yet')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///tool-share')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', 'secret_backup')
@@ -27,3 +29,29 @@ connect_db(app)
 def get_home():
     """Home Page"""
     return render_template('home.html')
+
+# USER REGISTRATION
+@app.route('/register', methods=['GET', 'POST'])
+def user_registration():
+    """User Registration Page"""
+    form = UserRegistrationForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        email = form.email.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        zip_code = form.zip_code.data
+
+        new_user = User.register(username, password, email, first_name, last_name, zip_code)
+        db.session.add(new_user)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            form.username.errors.append("Username is taken")
+            return render_template('users/register.html', form=form)
+       
+        flash(f"Welcome {first_name}, we successfully created your account!", "success")
+        return redirect('/')
+    else:
+        return render_template('users/register.html', form=form)
