@@ -3,7 +3,7 @@ from flask import Flask, render_template, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User
 from dotenv import load_dotenv
-from forms import UserRegistrationForm
+from forms import UserRegistrationForm, UserLoginForm
 from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
@@ -55,3 +55,21 @@ def user_registration():
         return redirect('/')
     else:
         return render_template('users/register.html', form=form)
+
+# LOG IN AS USER
+@app.route('/login', methods=['GET', 'POST'])
+def user_login():
+    form = UserLoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        user = User.authenticate(username, password)
+        if user:
+            flash(f"Welcome back, {user.username}", "success")
+            return redirect('/')
+        else:
+            form.username.errors = ['Invalid username/password']
+
+    return render_template('users/login.html', form=form)
