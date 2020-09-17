@@ -54,7 +54,7 @@ def user_registration():
             form.username.errors.append("Username is taken")
             return render_template('users/register.html', form=form)
 
-        session["user_id"] = user.id # Keeps user logged in
+        session["user_id"] = new_user.id # Keeps user logged in
         flash(f"Welcome {first_name}, we successfully created your account!", "success")
         return redirect('/')
     else:
