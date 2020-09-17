@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, flash, redirect
+from flask import Flask, render_template, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User
 from dotenv import load_dotenv
@@ -28,7 +28,10 @@ connect_db(app)
 @app.route('/')
 def get_home():
     """Home Page"""
-    return render_template('home.html')
+    if "user_id" not in session:
+        return render_template('home.html')
+    else:
+        return render_template('map.html')
 
 # USER REGISTRATION
 @app.route('/register', methods=['GET', 'POST'])
@@ -50,7 +53,8 @@ def user_registration():
         except IntegrityError:
             form.username.errors.append("Username is taken")
             return render_template('users/register.html', form=form)
-       
+
+        session["user_id"] = user.id # Keeps user logged in
         flash(f"Welcome {first_name}, we successfully created your account!", "success")
         return redirect('/')
     else:
@@ -67,9 +71,17 @@ def user_login():
 
         user = User.authenticate(username, password)
         if user:
+            session["user_id"] = user.id # Keeps user logged in
             flash(f"Welcome back, {user.username}", "success")
             return redirect('/')
         else:
             form.username.errors = ['Invalid username/password']
 
     return render_template('users/login.html', form=form)
+
+# Logout User
+@app.route('/logout')
+def logout_user():
+    session.pop("user_id")
+    flash("Logged Out", "warning")
+    return redirect('/')

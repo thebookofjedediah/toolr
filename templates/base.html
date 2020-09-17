@@ -25,24 +25,31 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
+            {% if "user_id" not in session %}
             <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="/login">Sign In</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/register">Sign Up</a>
             </li>
+            {% endif %}
+            {% if "user_id" in session %}
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            {% endif %}
           </ul>
-          <span class="navbar-text">
+          <!-- <span class="navbar-text">
             this will display the name of user
-          </span>
+          </span> -->
         </div>
     </nav>
 </header>
 
 <body>
     <!-- Flashing messages at the top of the body -->
-    {% for msg in get_flashed_messages() %}
-        <p>{{msg}}</p>
+    {% for category, msg in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{category}}">{{ msg }}</div>
     {% endfor %}
 
     <!-- Content area for other template -->
