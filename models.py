@@ -88,3 +88,11 @@ class Tools(db.Model):
         db.Integer,
         db.ForeignKey('users.zip_code'), 
         nullable=False)
+
+
+    # Setting up relationships according to this reddit comment
+    # https://www.reddit.com/r/flask/comments/2o4ejl/af_flask_sqlalchemy_two_foreign_keys_referencing/
+    # It might be like:
+    # owner = db.relationship('Users', foreign_keys='Tools.owner_id')
+    # renter = db.relationship('Users', foreign_keys='Tools.renter_id')
+    # location = db.relationship('Users', foreign_keys='Tools.location_id')
