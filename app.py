@@ -99,4 +99,25 @@ def get_user_information(username):
     user = User.query.get(user_id)
     return render_template('users/profile.html', user=user)
 
-# ADD A TOOL
+# ADD A TOOL FORM
+@app.route('/username/tools/add', methods=['GET', 'POST'])
+def add_tool_form(username):
+    form = ToolAddForm()
+
+    if "username" not in session or username != session['username']:
+        flash("You are not authorized to view that page", "danger")
+        return redirect('/')
+    
+    if form.validate_on_submit():
+        title = form.title.data
+        content = form.content.data
+
+        new_tool = Tool() #*************Add the form code here
+        db.session.add(new_tool)
+        db.session.commit()
+        flash("New Tool Added", "success")
+        return redirect(f"/users/{username}")
+
+    user_id = session["user_id"]
+    user = User.query.get(user_id)
+    return render_template('add_tool.html', user=user, form=form)
