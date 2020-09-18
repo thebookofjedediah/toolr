@@ -62,7 +62,7 @@ class User(db.Model):
             return False
 
 # Tools Model
-class Tools(db.Model):
+class Tool(db.Model):
     """Tools model"""
 
     __tablename__ = 'tools'
@@ -86,9 +86,10 @@ class Tools(db.Model):
 
     location_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.zip_code'), 
         nullable=False)
 
+    owner = db.relationship('User', foreign_keys=[owner_id])
+    renter = db.relationship('User', foreign_keys=[renter_id])
 
     # Setting up relationships according to this reddit comment
     # https://www.reddit.com/r/flask/comments/2o4ejl/af_flask_sqlalchemy_two_foreign_keys_referencing/

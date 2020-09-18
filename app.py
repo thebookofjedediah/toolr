@@ -55,6 +55,7 @@ def user_registration():
             return render_template('users/register.html', form=form)
 
         session["user_id"] = new_user.id # Keeps user logged in
+        session["username"] = user.username # Keeps user logged in
         flash(f"Welcome {first_name}, we successfully created your account!", "success")
         return redirect('/')
     else:
@@ -72,6 +73,7 @@ def user_login():
         user = User.authenticate(username, password)
         if user:
             session["user_id"] = user.id # Keeps user logged in
+            session["username"] = user.username # Keeps user logged in
             flash(f"Welcome back, {user.username}", "success")
             return redirect('/')
         else:
@@ -83,5 +85,18 @@ def user_login():
 @app.route('/logout')
 def logout_user():
     session.pop("user_id")
+    session.pop("username")
     flash("Logged Out", "warning")
     return redirect('/')
+
+# USER PROFILE PAGE
+@app.route('/users/<username>')
+def get_user_information(username):
+    if "username" not in session or username != session['username']:
+        flash("You are not authorized to view that page", "danger")
+        return redirect('/')
+    user_id = session["user_id"]
+    user = User.query.get(user_id)
+    return render_template('users/profile.html', user=user)
+
+# ADD A TOOL

@@ -2,25 +2,27 @@
 {% extends 'base.html' %}
 {% block title %} Login | Tool Share {% endblock %}
 {% block content %}
-<h1 class="display-1">Sign In</h1>
-<p class="lead">Login here! Don't have an account? <a href="/register">Register here</a>.</p>
+<div class="container">
+    <h1 class="display-1">Sign In</h1>
+    <p class="lead">Login here! Don't have an account? <a href="/register">Register here</a>.</p>
 
-<form method="POST">
-    {{ form.hidden_tag() }}
+    <form method="POST">
+        {{ form.hidden_tag() }}
 
-    {% for field in form 
-        if field.widget.input_type != 'hidden' %}
-    <p>
-        {{ field.label }}
-        {{ field(class_="form-control") }}
+        {% for field in form 
+            if field.widget.input_type != 'hidden' %}
+        <p>
+            {{ field.label }}
+            {{ field(class_="form-control") }}
 
-        {% for error in field.errors %}
-        <span class="small form-text text-danger">{{ error }}</span>
+            {% for error in field.errors %}
+            <span class="small form-text text-danger">{{ error }}</span>
+            {% endfor %}
+        </p>
         {% endfor %}
-    </p>
-    {% endfor %}
 
-    <button class="btn btn-success" type="submit">Login</button>
-</form>
+        <button class="btn btn-success" type="submit">Login</button>
+    </form>
+</div>
 
 {% endblock %}

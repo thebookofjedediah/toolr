@@ -24,7 +24,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav ml-auto">
             {% if "user_id" not in session %}
             <li class="nav-item">
                 <a class="nav-link" href="/login">Sign In</a>
@@ -53,8 +53,6 @@
     {% endfor %}
 
     <!-- Content area for other template -->
-    <div class="container">
         {% block content %} {% endblock %}
-    </div>
 </body>
 </html>
