@@ -18,7 +18,7 @@
     <ul>
         {% for tool in user.tools %}
         <li>
-            <a href="#">{{tool.name}}</a> 
+            <a href="/users/{{user.username}}/tools/{{tool.id}}">{{tool.name}}</a> 
             <!-- dont forget to delete the ul style -->
         </li>
         {% endfor %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %} {{tool.name}} Details | Tool Share {% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1>Information for, {{tool.name}}</h1>
+    <p>Owned by: {{tool.owner.username}}</p>
+    <p>Location: {{tool.location_id}}</p>
+    <p>Name: {{tool.name}}</p>
+    <p>Description: {{tool.description}}</p>
+
+</div>
+{% endblock %}

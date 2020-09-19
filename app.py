@@ -31,7 +31,8 @@ def get_home():
     if "username" not in session:
         return render_template('home.html')
     else:
-        return render_template('map.html')
+        tools = Tool.query.all()
+        return render_template('map.html', tools=tools)
 
 # USER REGISTRATION
 @app.route('/register', methods=['GET', 'POST'])
@@ -118,3 +119,13 @@ def add_tool_form(username):
 
     user = User.query.filter_by(username=username).first()
     return render_template('tools/add_tool.html', user=user, form=form)
+
+# TOOL DETAILS PAGE
+@app.route('/users/<username>/tools/<toolID>')
+def get_tool_information(username, toolID):
+    if "username" not in session:
+        flash("You are not authorized to view that page", "danger")
+        return redirect('/')
+        
+    tool = Tool.query.filter_by(id=toolID).first()
+    return render_template('tools/tool_details.html', tool=tool)

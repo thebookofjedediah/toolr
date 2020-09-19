@@ -1,7 +1,22 @@
 {% extends 'base.html' %}
 {% block title %} Welcome | Tool Share {% endblock %}
 {% block content %}
+<div class="container">
 <h1>I am Map</h1>
 <p>map map map map</p>
+<table class="table">
+    <tr>
+        <th>Tool Name</th>
+        <th>Location</th>
+    </tr>
+    {% for tool in tools %}
+        <tr>
+            <td><a href="/users/{{tool.owner.username}}/tools/{{tool.id}}">{{tool.name}}</a></td>
+            <td>{{tool.location_id}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+</div>
 
 {% endblock %}
