@@ -22,6 +22,8 @@ app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', 'secret_backup')
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
+MAPQUEST_KEY = os.environ.get('MAPQUEST_CONSUMER_KEY')
+
 connect_db(app)
 
 # HOME PAGE ROUTE
@@ -31,8 +33,9 @@ def get_home():
     if "username" not in session:
         return render_template('home.html')
     else:
+        KEY = MAPQUEST_KEY
         tools = Tool.query.all()
-        return render_template('map.html', tools=tools)
+        return render_template('map.html', tools=tools, KEY=KEY)
 
 # USER REGISTRATION
 @app.route('/register', methods=['GET', 'POST'])

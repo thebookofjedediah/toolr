@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- add to head per page -->
+    {% block head %}
+    {% endblock %}
 
     <!-- Custom title per page -->
     <title>{% block title %} {% endblock %}</title>
@@ -15,6 +19,7 @@
 
     <!-- Theme Stylesheet Here -->
     <link rel="stylesheet" href="/static/theme.css">
+
 </head>
 
 <header>
@@ -59,5 +64,8 @@
 
     <!-- Content area for other template -->
         {% block content %} {% endblock %}
+
+    <!-- JS Sheet -->
+    <script src="/static/scripts.js"></script>
 </body>
 </html>
