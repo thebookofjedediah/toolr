@@ -31,6 +31,8 @@ class User(db.Model):
     zip_code = db.Column(db.Integer, nullable=False)
     img_url = db.Column(db.Text, default="/static/images/default-pic.png")
 
+    # tools = db.relationship("Tool", backref="owner", cascade="all,delete")
+
     @classmethod
     def register(cls, username, pwd, email, first_name, last_name, zip_code):
         """Register a user with hashed password and return the user"""
@@ -61,6 +63,7 @@ class User(db.Model):
         else:
             return False
 
+
 # Tools Model
 class Tool(db.Model):
     """Tools model"""
@@ -80,6 +83,8 @@ class Tool(db.Model):
 
     name = db.Column(db.String(50), nullable=False)
 
+    description = db.Column(db.Text, nullable=False)
+
     img_url = db.Column(
         db.Text,
         default="/static/images/default-pic.png")
@@ -88,8 +93,8 @@ class Tool(db.Model):
         db.Integer,
         nullable=False)
 
-    owner = db.relationship('User', foreign_keys=[owner_id])
-    renter = db.relationship('User', foreign_keys=[renter_id])
+    owner = db.relationship('User', backref="tools", foreign_keys=[owner_id])
+    # renter = db.relationship('User', foreign_keys=[renter_id])
 
     # Setting up relationships according to this reddit comment
     # https://www.reddit.com/r/flask/comments/2o4ejl/af_flask_sqlalchemy_two_foreign_keys_referencing/
@@ -97,3 +102,4 @@ class Tool(db.Model):
     # owner = db.relationship('Users', foreign_keys='Tools.owner_id')
     # renter = db.relationship('Users', foreign_keys='Tools.renter_id')
     # location = db.relationship('Users', foreign_keys='Tools.location_id')
+

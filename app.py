@@ -1,9 +1,9 @@
 import os
 from flask import Flask, render_template, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
-from forms import UserRegistrationForm, UserLoginForm
+from forms import UserRegistrationForm, UserLoginForm, ToolAddForm
 from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
@@ -28,7 +28,7 @@ connect_db(app)
 @app.route('/')
 def get_home():
     """Home Page"""
-    if "user_id" not in session:
+    if "username" not in session:
         return render_template('home.html')
     else:
         return render_template('map.html')
@@ -54,8 +54,7 @@ def user_registration():
             form.username.errors.append("Username is taken")
             return render_template('users/register.html', form=form)
 
-        session["user_id"] = new_user.id # Keeps user logged in
-        session["username"] = user.username # Keeps user logged in
+        session["username"] = new_user.username # Keeps user logged in
         flash(f"Welcome {first_name}, we successfully created your account!", "success")
         return redirect('/')
     else:
@@ -72,7 +71,6 @@ def user_login():
 
         user = User.authenticate(username, password)
         if user:
-            session["user_id"] = user.id # Keeps user logged in
             session["username"] = user.username # Keeps user logged in
             flash(f"Welcome back, {user.username}", "success")
             return redirect('/')
@@ -84,7 +82,6 @@ def user_login():
 # Logout User
 @app.route('/logout')
 def logout_user():
-    session.pop("user_id")
     session.pop("username")
     flash("Logged Out", "warning")
     return redirect('/')
@@ -95,29 +92,29 @@ def get_user_information(username):
     if "username" not in session or username != session['username']:
         flash("You are not authorized to view that page", "danger")
         return redirect('/')
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
+
+    user = User.query.filter_by(username=username).first()
     return render_template('users/profile.html', user=user)
 
 # ADD A TOOL FORM
-@app.route('/username/tools/add', methods=['GET', 'POST'])
+@app.route('/users/<username>/tools/add', methods=['GET', 'POST'])
 def add_tool_form(username):
     form = ToolAddForm()
-
+    
     if "username" not in session or username != session['username']:
         flash("You are not authorized to view that page", "danger")
         return redirect('/')
     
     if form.validate_on_submit():
-        title = form.title.data
-        content = form.content.data
+        user = User.query.filter_by(username=username).first() #get the user
+        name = form.name.data
+        description = form.description.data
 
-        new_tool = Tool() #*************Add the form code here
+        new_tool = Tool(owner_id=user.id, name=name, description=description, location_id=user.zip_code)
         db.session.add(new_tool)
         db.session.commit()
         flash("New Tool Added", "success")
         return redirect(f"/users/{username}")
 
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
-    return render_template('add_tool.html', user=user, form=form)
+    user = User.query.filter_by(username=username).first()
+    return render_template('tools/add_tool.html', user=user, form=form)

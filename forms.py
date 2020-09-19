@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField
+from wtforms import StringField, PasswordField, IntegerField, TextAreaField
 from wtforms.validators import InputRequired
 
 class UserRegistrationForm(FlaskForm):
@@ -14,4 +14,6 @@ class UserLoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
 
-# CREATE TOOL FORM
+class ToolAddForm(FlaskForm):
+    name = StringField("Tool Name", validators=[InputRequired()])
+    description = TextAreaField("Tool Description", validators=[InputRequired()])
