@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template, flash, redirect, session
+from flask import Flask, render_template, flash, redirect, session, request
+import requests
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
@@ -23,6 +24,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 MAPQUEST_KEY = os.environ.get('MAPQUEST_CONSUMER_KEY')
+BASE_URL = "http://www.mapquestapi.com/geocoding/v1"
 
 connect_db(app)
 
@@ -35,7 +37,19 @@ def get_home():
     else:
         KEY = MAPQUEST_KEY
         tools = Tool.query.all()
-        return render_template('map.html', tools=tools, KEY=KEY)
+        username = session["username"]
+        user = User.query.filter_by(username=username).first()
+        zip_code = user.zip_code
+
+        res = requests.get(f"{BASE_URL}/address", params={'key': KEY, 'location': zip_code})
+
+        data = res.json()
+        lat = data["results"][0]['locations'][0]['latLng']['lat']
+        lng = data["results"][0]['locations'][0]['latLng']['lng']
+
+        center = [lat, lng]
+
+        return render_template('map.html', tools=tools, KEY=KEY, center=center)
 
 # USER REGISTRATION
 @app.route('/register', methods=['GET', 'POST'])
