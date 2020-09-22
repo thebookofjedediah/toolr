@@ -28,6 +28,18 @@ BASE_URL = "http://www.mapquestapi.com/geocoding/v1"
 
 connect_db(app)
 
+# GET LAT AND LNG FOR USER BASED ON ADDRESS/ZIP/ETC
+def get_map_center(address):
+
+    res = requests.get(f"{BASE_URL}/address", params={'key': MAPQUEST_KEY, 'location': address})
+
+    data = res.json()
+    lat = data["results"][0]['locations'][0]['latLng']['lat']
+    lng = data["results"][0]['locations'][0]['latLng']['lng']
+    center = [lat, lng]
+
+    return center
+
 # HOME PAGE ROUTE
 @app.route('/')
 def get_home():
@@ -35,21 +47,14 @@ def get_home():
     if "username" not in session:
         return render_template('home.html')
     else:
-        KEY = MAPQUEST_KEY
         tools = Tool.query.all()
         username = session["username"]
         user = User.query.filter_by(username=username).first()
         zip_code = user.zip_code
 
-        res = requests.get(f"{BASE_URL}/address", params={'key': KEY, 'location': zip_code})
+        center = get_map_center(zip_code)
 
-        data = res.json()
-        lat = data["results"][0]['locations'][0]['latLng']['lat']
-        lng = data["results"][0]['locations'][0]['latLng']['lng']
-
-        center = [lat, lng]
-
-        return render_template('map.html', tools=tools, KEY=KEY, center=center)
+        return render_template('map.html', tools=tools, KEY=MAPQUEST_KEY, center=center)
 
 # USER REGISTRATION
 @app.route('/register', methods=['GET', 'POST'])
