@@ -6,6 +6,7 @@ from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
 from forms import UserRegistrationForm, UserLoginForm, ToolAddForm
 from sqlalchemy.exc import IntegrityError
+import json
 
 app = Flask(__name__)
 
@@ -40,6 +41,38 @@ def get_map_center(address):
 
     return center
 
+# GET TOOL COORDS
+def get_tool_coords(tools):
+
+    zips = set([tool.location_id for tool in tools])
+
+    locations = ""
+    for z in zips:
+        locations += f"&location={z}"
+    
+    res = requests.get(f"{BASE_URL}/batch?key={MAPQUEST_KEY}{locations}")
+    data = res.json()
+
+    postal_code_lat_long_map = {}
+    for result in data["results"]:
+        for location in result["locations"]:
+            postal_code_lat_long_map[int(location["postalCode"])] = [
+                location['latLng']['lat'], location['latLng']['lng']]
+
+    """addressPoints = [
+        list(postal_code_lat_long_map.get(tool.location_id)).append(tool.name)
+        for tool in tools
+    ]"""
+    addressPoints = []
+
+    for tool in tools:
+        new_point = list.copy(postal_code_lat_long_map.get(tool.location_id))
+        new_point.append(tool.name)
+        new_point[2].replace("'", '"')
+        addressPoints.append(new_point)
+
+    return addressPoints
+
 # HOME PAGE ROUTE
 @app.route('/')
 def get_home():
@@ -53,8 +86,11 @@ def get_home():
         zip_code = user.zip_code
 
         center = get_map_center(zip_code)
+        addresses = get_tool_coords(tools)
+        print("****************************")
+        print(addresses)
 
-        return render_template('map.html', tools=tools, KEY=MAPQUEST_KEY, center=center)
+        return render_template('map.html', tools=tools, KEY=MAPQUEST_KEY, center=center, addresses=addresses)
 
 # USER REGISTRATION
 @app.route('/register', methods=['GET', 'POST'])
