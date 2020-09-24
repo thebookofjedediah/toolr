@@ -6,7 +6,7 @@ from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
 from forms import UserRegistrationForm, UserLoginForm, ToolAddForm
 from sqlalchemy.exc import IntegrityError
-import json
+from flask_socketio import SocketIO, join_room, leave_room
 
 app = Flask(__name__)
 
@@ -15,6 +15,8 @@ APP_ROOT = os.path.join(os.path.dirname(__file__), '..')   # refers to applicati
 dotenv_path = os.path.join(APP_ROOT, '.env')
 load_dotenv(dotenv_path)
 
+# Add socketio to the app
+socketio = SocketIO(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///tool-share')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -187,3 +189,37 @@ def get_tool_information(username, toolID):
         
     tool = Tool.query.filter_by(id=toolID).first()
     return render_template('tools/tool_details.html', tool=tool)
+
+
+
+# ******************
+# CHAT FEATURES HERE
+# ******************
+
+# ENTER CHAT ROOM
+@app.route('/users/<username>/tools/<toolID>/chat')
+def get_chat_room(username, toolID):
+    if "username" not in session:
+        flash("You are not authorized to view that page", "danger")
+        return redirect('/')
+
+    curr_username = session["username"]
+    user = User.query.filter_by(username=curr_username).first()
+    room = username + toolID + curr_username
+    print("Room**************Room")
+    print(room)
+    print("Room**************Room")
+    return render_template('chat.html', user=user, room=room)
+
+def messageReceived(methods=['GET', 'POST']):
+    print('message was received!!!')
+
+
+@socketio.on('my event')
+def handle_my_custom_event(json, methods=['GET', 'POST']):
+    print('received my event: ' + str(json))
+    socketio.emit('my response', json, callback=messageReceived)
+
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True)
