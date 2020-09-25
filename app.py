@@ -6,7 +6,8 @@ from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
 from forms import UserRegistrationForm, UserLoginForm, ToolAddForm
 from sqlalchemy.exc import IntegrityError
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from time import localtime, strftime
 
 app = Flask(__name__)
 
@@ -17,6 +18,9 @@ load_dotenv(dotenv_path)
 
 # Add socketio to the app
 socketio = SocketIO(app)
+if __name__ == '__main__':
+    socketio.run(app)
+ROOMS = ["tool1", "tool2", "tool3", "tool4"]
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///tool-share')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -196,4 +200,23 @@ def get_tool_information(username, toolID):
 # CHAT FEATURES HERE
 # ******************
 
-# ENTER CHAT ROOM
+# GET CHAT PAGE
+@app.route('/chat')
+def chat_messages():
+    username = session["username"]
+    chats = ROOMS
+    return render_template('chat.html', username=username, chats=chats)
+
+@socketio.on('message')
+def message(data):
+    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
+
+@socketio.on('join')
+def join(data):
+    join_room(data['room'])
+    send({'msg': data['username'] + " has joined the " + data['room'] + " room "}, room=data['room'])
+
+@socketio.on('leave')
+def leave(data):
+    leave_room(data['room'])
+    send({'msg': data['username'] + " has left the " + data['room'] + " room "}, room=data['room'])
