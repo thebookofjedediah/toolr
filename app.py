@@ -76,7 +76,6 @@ def get_tool_coords(tools):
     for tool in tools:
         new_point = list.copy(postal_code_lat_long_map.get(tool.location_id))
         new_point.append(tool.name)
-        new_point[2].replace("'", '"')
         addressPoints.append(new_point)
 
     return addressPoints
@@ -92,7 +91,6 @@ def get_home():
         username = session["username"]
         user = User.query.filter_by(username=username).first()
         zip_code = user.zip_code
-
         center = get_map_center(zip_code)
         addresses = get_tool_coords(tools)
 
@@ -213,7 +211,7 @@ def get_tool_information(username, toolID):
     if "username" not in session:
         flash("You are not authorized to view that page", "danger")
         return redirect('/')
-        
+    
     tool = Tool.query.filter_by(id=toolID).first()
     return render_template('tools/tool_details.html', tool=tool)
 
