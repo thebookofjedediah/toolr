@@ -93,6 +93,12 @@ class Tool(db.Model):
         db.Integer,
         nullable=False)
 
+    available = db.Column(
+        db.Boolean,
+        default=True,
+        nullable=False
+    )
+
     owner = db.relationship('User', backref="tools", foreign_keys=[owner_id])
     # renter = db.relationship('User', foreign_keys=[renter_id])
 

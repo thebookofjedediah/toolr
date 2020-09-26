@@ -4,7 +4,7 @@ import requests
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
-from forms import UserRegistrationForm, UserLoginForm, ToolAddForm
+from forms import UserRegistrationForm, UserLoginForm, ToolAddForm, ToolEditForm
 from sqlalchemy.exc import IntegrityError
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from time import localtime, strftime
@@ -195,6 +195,28 @@ def get_tool_information(username, toolID):
         
     tool = Tool.query.filter_by(id=toolID).first()
     return render_template('tools/tool_details.html', tool=tool)
+
+# EDIT TOOL
+@app.route('/users/<username>/tools/<toolID>/update', methods=["GET", "POST"])
+def edit_tool(username, toolID):
+    tool = Tool.query.get_or_404(toolID)
+    form = ToolEditForm(obj=tool)
+    if "username" not in session:
+        flash("please login first", "warning")
+        return redirect('/login')
+    
+    if tool.owner.username != session["username"]:
+        flash("That is not your post", "danger")
+        return redirect('/')
+
+    if form.validate_on_submit():
+        tool.name = form.name.data
+        tool.description = form.description.data
+        tool.available = form.available.data
+        db.session.commit()
+        return redirect(f"/users/{tool.owner.username}/tools/{tool.id}")
+    
+    return render_template('tools/edit_tool.html', form=form, username=session["username"])
 
 # DELETE TOOLS
 @app.route('/users/<username>/tools/<toolID>/delete', methods=['POST'])

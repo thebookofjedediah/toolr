@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, TextAreaField
+from wtforms import StringField, PasswordField, IntegerField, TextAreaField, BooleanField
 from wtforms.validators import InputRequired
 
 class UserRegistrationForm(FlaskForm):
@@ -17,3 +17,8 @@ class UserLoginForm(FlaskForm):
 class ToolAddForm(FlaskForm):
     name = StringField("Tool Name", validators=[InputRequired()])
     description = TextAreaField("Tool Description", validators=[InputRequired()])
+
+class ToolEditForm(FlaskForm):
+    name = StringField("Tool Name", validators=[InputRequired()])
+    description = TextAreaField("Tool Description", validators=[InputRequired()])
+    available = BooleanField("Available?")
