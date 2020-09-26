@@ -34,8 +34,8 @@ connect_db(app)
 socketio = SocketIO(app)
 if __name__ == '__main__':
     socketio.run(app)
-ALL_TOOLS = Tool.query.all()
-ROOMS = [tool.name for tool in ALL_TOOLS]
+# ALL_TOOLS = Tool.query.all()
+# ROOMS = [tool.name for tool in ALL_TOOLS]
 
 # GET LAT AND LNG FOR USER BASED ON ADDRESS/ZIP/ETC
 def get_map_center(address):
@@ -95,8 +95,6 @@ def get_home():
 
         center = get_map_center(zip_code)
         addresses = get_tool_coords(tools)
-        print("****************************")
-        print(addresses)
 
         return render_template('map.html', tools=tools, KEY=MAPQUEST_KEY, center=center, addresses=addresses)
 
@@ -165,9 +163,30 @@ def get_user_information(username):
     curr_user = User.query.filter_by(username=curr_username).first()
     return render_template('users/profile.html', prof_user=prof_user, curr_user=curr_user)
 
+# DELETE YOUR USER
+@app.route('/users/<username>/delete', methods=['POST'])
+def delete_user(username):
+    """Delete the user"""
+    if "username" not in session:
+        flash("please login first", "warning")
+        return redirect('/login')
+    if username == session["username"]:
+        curr_username = session["username"]
+        curr_user = User.query.filter_by(username=curr_username).first()
+        print("***********************")
+        print(curr_user)
+        db.session.delete(curr_user)
+        db.session.commit()
+        flash("DELETED USER", "success")
+        session.pop("username")
+        return redirect("/")
+    flash("You don't have permission to delete that", "danger")
+    return redirect('/')
+
 # ADD A TOOL FORM
 @app.route('/users/<username>/tools/add', methods=['GET', 'POST'])
 def add_tool_form(username):
+    """add a tool"""
     form = ToolAddForm()
     
     if "username" not in session or username != session['username']:
@@ -229,6 +248,8 @@ def delete_tool(username, toolID):
         return redirect('/login')
     tool = Tool.query.get_or_404(toolID)
     if tool.owner.username == session["username"]:
+        print("****************")
+        print(tool.owner_id)
         db.session.delete(tool)
         db.session.commit()
         flash("DELETED", "success")

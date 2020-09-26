@@ -32,7 +32,7 @@ class User(db.Model):
     zip_code = db.Column(db.Integer, nullable=False)
     img_url = db.Column(db.Text, default="/static/images/default-pic.png")
 
-    # tools = db.relationship("Tool", backref="owner", cascade="all,delete")
+    tools = db.relationship("Tool", backref="owner", cascade="all,delete")
 
     @classmethod
     def register(cls, username, pwd, email, first_name, last_name, zip_code):
@@ -78,9 +78,9 @@ class Tool(db.Model):
         db.ForeignKey('users.id'),
         nullable=False)
 
-    renter_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'))
+    # renter_id = db.Column(
+    #     db.Integer,
+    #     db.ForeignKey('users.id'))
 
     name = db.Column(db.String(50), nullable=False)
 
@@ -100,7 +100,7 @@ class Tool(db.Model):
         nullable=False
     )
 
-    owner = db.relationship('User', backref="tools", foreign_keys=[owner_id])
+    # owner = db.relationship('User', backref="tools", foreign_keys=[owner_id])
  
 # Message Model
 # class Message(db.Model):
