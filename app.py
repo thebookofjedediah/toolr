@@ -196,6 +196,22 @@ def get_tool_information(username, toolID):
     tool = Tool.query.filter_by(id=toolID).first()
     return render_template('tools/tool_details.html', tool=tool)
 
+# DELETE TOOLS
+@app.route('/users/<username>/tools/<toolID>/delete', methods=['POST'])
+def delete_tool(username, toolID):
+    """Delete the tool"""
+    if "username" not in session:
+        flash("please login first", "warning")
+        return redirect('/login')
+    tool = Tool.query.get_or_404(toolID)
+    if tool.owner.username == session["username"]:
+        db.session.delete(tool)
+        db.session.commit()
+        flash("DELETED", "success")
+        return redirect(f"/users/{tool.owner.username}")
+    flash("You don't have permission to delete that", "danger")
+    return redirect('/')
+
 
 
 # ******************
