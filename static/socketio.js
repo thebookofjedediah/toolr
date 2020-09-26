@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     var socket = io();
 
-    let room = "tool1";
-    joinRoom("tool1")
+    let room = "";
   
     socket.on('message', data => {
         const p = document.createElement('p');

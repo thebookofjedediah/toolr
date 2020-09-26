@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -100,12 +101,25 @@ class Tool(db.Model):
     )
 
     owner = db.relationship('User', backref="tools", foreign_keys=[owner_id])
-    # renter = db.relationship('User', foreign_keys=[renter_id])
+ 
+# Message Model
+# class Message(db.Model):
+#     """Message model"""
 
-    # Setting up relationships according to this reddit comment
-    # https://www.reddit.com/r/flask/comments/2o4ejl/af_flask_sqlalchemy_two_foreign_keys_referencing/
-    # It might be like:
-    # owner = db.relationship('Users', foreign_keys='Tools.owner_id')
-    # renter = db.relationship('Users', foreign_keys='Tools.renter_id')
-    # location = db.relationship('Users', foreign_keys='Tools.location_id')
+#     __tablename__ = 'messages'
 
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+#     writer_name = db.Column(
+#         db.String, 
+#         db.ForeignKey('users.username'),
+#         nullable=False)
+
+#     content = db.Column(db.Text, nullable=False)
+
+#     time = db.Column(
+#         db.String,
+#         nullable=False,
+#         default=datetime.utcnow())
+
+#     writer = db.relationship('User', backref="message", foreign_keys=[writer_name])

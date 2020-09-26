@@ -16,11 +16,6 @@ APP_ROOT = os.path.join(os.path.dirname(__file__), '..')   # refers to applicati
 dotenv_path = os.path.join(APP_ROOT, '.env')
 load_dotenv(dotenv_path)
 
-# Add socketio to the app
-socketio = SocketIO(app)
-if __name__ == '__main__':
-    socketio.run(app)
-ROOMS = ["tool1", "tool2", "tool3", "tool4"]
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///tool-share')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -34,6 +29,13 @@ MAPQUEST_KEY = os.environ.get('MAPQUEST_CONSUMER_KEY')
 BASE_URL = "http://www.mapquestapi.com/geocoding/v1"
 
 connect_db(app)
+
+# Add socketio to the app
+socketio = SocketIO(app)
+if __name__ == '__main__':
+    socketio.run(app)
+ALL_TOOLS = Tool.query.all()
+ROOMS = [tool.name for tool in ALL_TOOLS]
 
 # GET LAT AND LNG FOR USER BASED ON ADDRESS/ZIP/ETC
 def get_map_center(address):
@@ -144,7 +146,7 @@ def user_login():
 
     return render_template('users/login.html', form=form)
 
-# Logout User
+# LOGOUT USER
 @app.route('/logout')
 def logout_user():
     session.pop("username")
@@ -249,6 +251,12 @@ def chat_messages():
 
 @socketio.on('message')
 def message(data):
+    # time = strftime("%b-%d %I:%M%p", localtime())
+
+    # new_message = Message(writer_name=session["username"], timestamp=time, content=data['msg'])
+    # db.session.add(new_message)
+    # db.session.commit()
+
     send({'msg': data['msg'], 'username': data['username'], 'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
 
 @socketio.on('join')
