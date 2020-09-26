@@ -154,12 +154,14 @@ def logout_user():
 # USER PROFILE PAGE
 @app.route('/users/<username>')
 def get_user_information(username):
-    if "username" not in session or username != session['username']:
+    if "username" not in session:
         flash("You are not authorized to view that page", "danger")
         return redirect('/')
 
-    user = User.query.filter_by(username=username).first()
-    return render_template('users/profile.html', user=user)
+    prof_user = User.query.filter_by(username=username).first()
+    curr_username = session["username"]
+    curr_user = User.query.filter_by(username=curr_username).first()
+    return render_template('users/profile.html', prof_user=prof_user, curr_user=curr_user)
 
 # ADD A TOOL FORM
 @app.route('/users/<username>/tools/add', methods=['GET', 'POST'])

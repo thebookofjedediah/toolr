@@ -34,12 +34,15 @@
 
         for (var i = 0; i < addressPoints.length; i++) {
           var addressPoint = addressPoints[i];
-          var title = addressPoint[2];
+          var titleLink = document.createElement('a');
+          titleLink.title = addressPoint[2];
+          titleLink.href = "/";
+          titleLink.innerText = addressPoint[2];
           var marker = L.marker(new L.LatLng(addressPoint[0], addressPoint[1]), {
-            title: title,
+            title: titleLink,
             icon: L.mapquest.icons.marker()
           });
-          marker.bindPopup(title);
+          marker.bindPopup(titleLink);
           markers.addLayer(marker);
         }
 
@@ -50,7 +53,6 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-<h2>I am Map</h2>
 </div>
 <div id="map" style="width: 100%; height: 530px;"></div>
 <div class="container">

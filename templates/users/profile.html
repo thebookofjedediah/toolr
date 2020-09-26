@@ -3,22 +3,22 @@
 {% block content %}
 
 <div class="container">
-    <h1>Information for, {{user.first_name}}</h1>
+    <h1>Information for, {{prof_user.first_name}}</h1>
 
-    <p>Name: {{user.first_name}} {{user.last_name}}</p>
-    <p>Username: {{user.username}}</p>
-    <p>Email: {{user.email}}</p>
-    <p>Location: {{user.zip_code}}</p>
+    <p>Name: {{prof_user.first_name}} {{prof_user.last_name}}</p>
+    <p>Username: {{prof_user.username}}</p>
+    <p>Email: {{prof_user.email}}</p>
+    <p>Location: {{prof_user.zip_code}}</p>
 
-
-
-    <a class="btn btn-primary" href="/users/{{user.username}}/tools/add">Add A Tool</a>
+    {% if curr_user == prof_user %}
+    <a class="btn btn-primary" href="/users/{{curr_user.username}}/tools/add">Add A Tool</a>
+    {% endif %}
 
     <h3 class="mt-4">Tools Owned</h3>
     <ul>
-        {% for tool in user.tools %}
+        {% for tool in prof_user.tools %}
         <li>
-            <a href="/users/{{user.username}}/tools/{{tool.id}}">{{tool.name}}</a> 
+            <a href="/users/{{prof_user.username}}/tools/{{tool.id}}">{{tool.name}}</a> 
             <!-- dont forget to delete the ul style -->
         </li>
         {% endfor %}
