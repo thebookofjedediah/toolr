@@ -13,7 +13,7 @@
     {% if curr_user == prof_user %}
     <a class="btn btn-primary" href="/users/{{curr_user.username}}/tools/add">Add A Tool</a>
     <form style="display: inline;" action="/users/{{curr_user.username}}/delete" method="POST">
-        <button class="btn btn-danger" type="submit">Delete My Account</button>
+        <button onclick="return confirm('Are you sure you want to delete? This action is irreversible.');" class="btn btn-danger" type="submit">Delete My Account</button>
     </form>
     {% endif %}
 
