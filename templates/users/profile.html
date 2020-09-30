@@ -11,7 +11,7 @@
     <p>Location: {{prof_user.zip_code}}</p>
 
     {% if curr_user == prof_user %}
-    <a class="btn btn-primary" href="/users/{{curr_user.username}}/tools/add">Add A Tool</a>
+    <a class="btn btn-primary" href="/tools/add">Add A Tool</a>
     <form style="display: inline;" action="/users/{{curr_user.username}}/delete" method="POST">
         <button onclick="return confirm('Are you sure you want to delete? This action is irreversible.');" class="btn btn-danger" type="submit">Delete My Account</button>
     </form>
@@ -21,7 +21,7 @@
     <ul>
         {% for tool in prof_user.tools %}
         <li>
-            <a href="/users/{{prof_user.username}}/tools/{{tool.id}}">{{tool.name}}</a> 
+            <a href="/tools/{{tool.id}}">{{tool.name}}</a> 
             <!-- dont forget to delete the ul style -->
         </li>
         {% endfor %}

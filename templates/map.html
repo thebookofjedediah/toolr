@@ -3,50 +3,54 @@
 {% block head %}
     <!-- Mapquest SDK -->
     <!-- ******************************* -->
+    <script type="text/javascript">
+      let curr_location = []
+      navigator.geolocation.getCurrentPosition(function(position) {
+          curr_location = [position.coords.latitude, position.coords.longitude];
+          return curr_location;
+      })
+  </script>
     <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
     <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
     <script src="https://unpkg.com/leaflet.markercluster@1.0.6/dist/leaflet.markercluster.js"></script>
     <link type="text/css" rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.0.6/dist/MarkerCluster.css"/>
     <link type="text/css" rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.0.6/dist/MarkerCluster.Default.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/he/1.2.0/he.min.js"></script>
-    <script type="text/javascript">
-        let curr_location = []
-        navigator.geolocation.getCurrentPosition(function(position) {
-            curr_location = [position.coords.latitude, position.coords.longitude];
-            return curr_location;
-        })
-    </script>
+
 
     <script type="text/javascript">
       window.onload = function() {
-        L.mapquest.key = "{{KEY}}";
-        var baseLayer = L.mapquest.tileLayer('map');
-
-        var map = L.mapquest.map('map', {
-          center: curr_location,
-          layers: baseLayer,
-          zoom: 13
-        });
-
-        var addressPoints = {{addresses | safe }}
-
-        var markers = L.markerClusterGroup();
-
-        for (var i = 0; i < addressPoints.length; i++) {
-          var addressPoint = addressPoints[i];
-          var titleLink = document.createElement('a');
-          titleLink.title = addressPoint[2];
-          titleLink.href = "/";
-          titleLink.innerText = addressPoint[2];
-          var marker = L.marker(new L.LatLng(addressPoint[0], addressPoint[1]), {
-            title: titleLink,
-            icon: L.mapquest.icons.marker()
+        if (navigator.geolocation){
+          L.mapquest.key = "{{KEY}}";
+          var baseLayer = L.mapquest.tileLayer('map');
+          console.log("****************" + curr_location)
+          var map = L.mapquest.map('map', {
+            center: curr_location,
+            layers: baseLayer,
+            zoom: 13
           });
-          marker.bindPopup(titleLink);
-          markers.addLayer(marker);
-        }
 
-        map.addLayer(markers);
+          var addressPoints = {{addresses | safe }}
+
+          var markers = L.markerClusterGroup();
+
+          for (var i = 0; i < addressPoints.length; i++) {
+            var addressPoint = addressPoints[i];
+            var titleLink = document.createElement('a');
+            titleLink.title = addressPoint[2];
+            titleLink.href = `/tools/${addressPoint[3]}`;
+            titleLink.innerText = addressPoint[2];
+            var marker = L.marker(new L.LatLng(addressPoint[0], addressPoint[1]), {
+              title: titleLink,
+              icon: L.mapquest.icons.marker()
+            });
+            marker.bindPopup(titleLink);
+            markers.addLayer(marker);
+          }
+
+          map.addLayer(markers);
+        }
+        
       }
     </script>
 
@@ -64,7 +68,7 @@
     </tr>
     {% for tool in tools %}
         <tr>
-            <td><a href="/users/{{tool.owner.username}}/tools/{{tool.id}}">{{tool.name}}</a></td>
+            <td><a href="/tools/{{tool.id}}">{{tool.name}}</a></td>
             <td>{{tool.location_id}}</td>
         </tr>
     {% endfor %}

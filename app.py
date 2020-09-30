@@ -6,8 +6,6 @@ from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
 from forms import UserRegistrationForm, UserLoginForm, ToolAddForm, ToolEditForm
 from sqlalchemy.exc import IntegrityError
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
-from time import localtime, strftime
 
 app = Flask(__name__)
 
@@ -30,12 +28,6 @@ BASE_URL = "http://www.mapquestapi.com/geocoding/v1"
 
 connect_db(app)
 
-# Add socketio to the app
-socketio = SocketIO(app)
-if __name__ == '__main__':
-    socketio.run(app)
-# ALL_TOOLS = Tool.query.all()
-# ROOMS = [tool.name for tool in ALL_TOOLS]
 
 # GET LAT AND LNG FOR USER BASED ON ADDRESS/ZIP/ETC
 def get_map_center(address):
@@ -76,6 +68,7 @@ def get_tool_coords(tools):
     for tool in tools:
         new_point = list.copy(postal_code_lat_long_map.get(tool.location_id))
         new_point.append(tool.name)
+        new_point.append(tool.id)
         addressPoints.append(new_point)
 
     return addressPoints
@@ -182,11 +175,11 @@ def delete_user(username):
     return redirect('/')
 
 # ADD A TOOL FORM
-@app.route('/users/<username>/tools/add', methods=['GET', 'POST'])
-def add_tool_form(username):
+@app.route('/tools/add', methods=['GET', 'POST'])
+def add_tool_form():
     """add a tool"""
     form = ToolAddForm()
-    
+    username = session["username"]
     if "username" not in session or username != session['username']:
         flash("You are not authorized to view that page", "danger")
         return redirect('/')
@@ -206,8 +199,8 @@ def add_tool_form(username):
     return render_template('tools/add_tool.html', user=user, form=form)
 
 # TOOL DETAILS PAGE
-@app.route('/users/<username>/tools/<toolID>')
-def get_tool_information(username, toolID):
+@app.route('/tools/<toolID>')
+def get_tool_information(toolID):
     if "username" not in session:
         flash("You are not authorized to view that page", "danger")
         return redirect('/')
@@ -216,8 +209,8 @@ def get_tool_information(username, toolID):
     return render_template('tools/tool_details.html', tool=tool)
 
 # EDIT TOOL
-@app.route('/users/<username>/tools/<toolID>/update', methods=["GET", "POST"])
-def edit_tool(username, toolID):
+@app.route('/tools/<toolID>/update', methods=["GET", "POST"])
+def edit_tool(toolID):
     tool = Tool.query.get_or_404(toolID)
     form = ToolEditForm(obj=tool)
     if "username" not in session:
@@ -233,13 +226,13 @@ def edit_tool(username, toolID):
         tool.description = form.description.data
         tool.available = form.available.data
         db.session.commit()
-        return redirect(f"/users/{tool.owner.username}/tools/{tool.id}")
+        return redirect(f"/tools/{tool.id}")
     
     return render_template('tools/edit_tool.html', form=form, username=session["username"])
 
 # DELETE TOOLS
-@app.route('/users/<username>/tools/<toolID>/delete', methods=['POST'])
-def delete_tool(username, toolID):
+@app.route('/tools/<toolID>/delete', methods=['POST'])
+def delete_tool(toolID):
     """Delete the tool"""
     if "username" not in session:
         flash("please login first", "warning")
@@ -254,36 +247,3 @@ def delete_tool(username, toolID):
         return redirect(f"/users/{tool.owner.username}")
     flash("You don't have permission to delete that", "danger")
     return redirect('/')
-
-
-
-# ******************
-# CHAT FEATURES HERE
-# ******************
-
-# GET CHAT PAGE
-@app.route('/chat')
-def chat_messages():
-    username = session["username"]
-    chats = ROOMS
-    return render_template('chat.html', username=username, chats=chats)
-
-@socketio.on('message')
-def message(data):
-    # time = strftime("%b-%d %I:%M%p", localtime())
-
-    # new_message = Message(writer_name=session["username"], timestamp=time, content=data['msg'])
-    # db.session.add(new_message)
-    # db.session.commit()
-
-    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
-
-@socketio.on('join')
-def join(data):
-    join_room(data['room'])
-    send({'msg': data['username'] + " has joined the " + data['room'] + " room "}, room=data['room'])
-
-@socketio.on('leave')
-def leave(data):
-    leave_room(data['room'])
-    send({'msg': data['username'] + " has left the " + data['room'] + " room "}, room=data['room'])
