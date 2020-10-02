@@ -4,7 +4,7 @@ import requests
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Tool
 from dotenv import load_dotenv
-from forms import UserRegistrationForm, UserLoginForm, ToolAddForm, ToolEditForm
+from forms import UserRegistrationForm, UserLoginForm, ToolAddForm, ToolEditForm, UserEditForm
 from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
@@ -154,6 +154,33 @@ def get_user_information(username):
     curr_user = User.query.filter_by(username=curr_username).first()
     return render_template('users/profile.html', prof_user=prof_user, curr_user=curr_user)
 
+# EDIT YOUR USER
+@app.route('/users/<username>/update', methods=["GET", "POST"])
+def edit_user(username):
+    user = User.query.filter_by(username=username).first()
+    form = UserEditForm(obj=user)
+    if "username" not in session:
+        flash("please login first", "warning")
+        return redirect('/login')
+    
+    if user.username != session["username"]:
+        flash("Access Denied, please sign into the appropriate account", "danger")
+        return redirect('/')
+
+    if form.validate_on_submit():
+        user.name = form.username.data
+        user.password = form.password.data
+        user.email = form.email.data
+        user.first_name = form.first_name.data 
+        user.last_name = form.last_name.data 
+        user.zip_code = form.zip_code.data
+        user.img_url = form.img_url.data
+        db.session.commit()
+        flash("Account Updated!", "primary")
+        return redirect(f"/users/{username}")
+    
+    return render_template('users/edit_user.html', form=form, username=session["username"])
+
 # DELETE YOUR USER
 @app.route('/users/<username>/delete', methods=['POST'])
 def delete_user(username):
@@ -226,6 +253,7 @@ def edit_tool(toolID):
         tool.description = form.description.data
         tool.available = form.available.data
         db.session.commit()
+        flash("Tool Updated!", "primary")
         return redirect(f"/tools/{tool.id}")
     
     return render_template('tools/edit_tool.html', form=form, username=session["username"])
@@ -239,8 +267,6 @@ def delete_tool(toolID):
         return redirect('/login')
     tool = Tool.query.get_or_404(toolID)
     if tool.owner.username == session["username"]:
-        print("****************")
-        print(tool.owner_id)
         db.session.delete(tool)
         db.session.commit()
         flash("DELETED", "success")

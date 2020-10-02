@@ -3,15 +3,18 @@
 {% block content %}
 
 <div class="container">
-    <h1>Information for, {{prof_user.first_name}}</h1>
+    <img class="img-fluid profile-header" src="/../../static/images/user-images/profile-header.jpg" alt="">
+    <div class="mt-n5">
+        <img class="avatar mt-n5 d-inline" src="{{curr_user.img_url}}" alt="profile picture">
+        <h1 class="h3 d-inline">{{prof_user.first_name}} {{prof_user.last_name}}</h1>
+    </div>
 
-    <p>Name: {{prof_user.first_name}} {{prof_user.last_name}}</p>
-    <p>Username: {{prof_user.username}}</p>
     <p>Email: {{prof_user.email}}</p>
     <p>Location: {{prof_user.zip_code}}</p>
 
     {% if curr_user == prof_user %}
     <a class="btn btn-primary" href="/tools/add">Add A Tool</a>
+    <a class="btn btn-secondary" href="/users/{{curr_user.username}}/update">Edit My Account</a>
     <form style="display: inline;" action="/users/{{curr_user.username}}/delete" method="POST">
         <button onclick="return confirm('Are you sure you want to delete? This action is irreversible.');" class="btn btn-danger" type="submit">Delete My Account</button>
     </form>

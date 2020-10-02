@@ -10,6 +10,15 @@ class UserRegistrationForm(FlaskForm):
     last_name = StringField("Last Name", validators=[InputRequired()])
     zip_code = IntegerField("Zip Code", validators=[InputRequired()])
 
+class UserEditForm(FlaskForm):
+    username = StringField("Username", validators=[InputRequired()])
+    password = PasswordField("Password", validators=[InputRequired()])
+    email = StringField("Email", validators=[InputRequired()])
+    first_name = StringField("First Name", validators=[InputRequired()])
+    last_name = StringField("Last Name", validators=[InputRequired()])
+    zip_code = IntegerField("Zip Code", validators=[InputRequired()])
+    img_url = StringField("Image URL")
+
 class UserLoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])

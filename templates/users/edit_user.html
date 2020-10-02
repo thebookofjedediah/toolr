@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %} Edit {{username}} | Tool Share {% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="display-1">Edit Tool</h1>
+    <p class="lead">Edit Your Account</p>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        {% for field in form 
+            if field.widget.input_type != 'hidden' %}
+        <p>
+            {{ field.label }}
+            {{ field(class_="form-control") }}
+
+            {% for error in field.errors %}
+            <span class="small form-text text-danger">{{ error }}</span>
+            {% endfor %}
+        </p>
+        {% endfor %}
+
+        <button class="btn btn-success" type="submit">Submit</button>
+    </form>
+</div>
+
+{% endblock %}
