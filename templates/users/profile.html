@@ -34,32 +34,4 @@
     </div>
 </div>
 
-<!-- 
-<div class="container">
-    <img class="img-fluid profile-header" src="/../../static/images/user-images/profile-header.jpg" alt="">
-    <div class="mt-n5">
-        <img class="avatar mt-n5 d-inline" src="{{curr_user.img_url}}" alt="profile picture">
-        <h1 class="h3 d-inline">{{prof_user.first_name}} {{prof_user.last_name}}</h1>
-    </div>
-
-    <p>Email: {{prof_user.email}}</p>
-    <p>Location: {{prof_user.zip_code}}</p>
-
-    {% if curr_user == prof_user %}
-    <a class="btn btn-primary" href="/tools/add">Add A Tool</a>
-    <a class="btn btn-secondary" href="/users/{{curr_user.username}}/update">Edit My Account</a>
-    <form style="display: inline;" action="/users/{{curr_user.username}}/delete" method="POST">
-        <button onclick="return confirm('Are you sure you want to delete? This action is irreversible.');" class="btn btn-danger" type="submit">Delete My Account</button>
-    </form>
-    {% endif %}
-
-    <h3 class="mt-4">Tools Owned</h3>
-    <ul>
-        {% for tool in prof_user.tools %}
-        <li>
-            <a href="/tools/{{tool.id}}">{{tool.name}}</a> 
-        </li>
-        {% endfor %}
-    </ul>
-</div> -->
 {% endblock %}
