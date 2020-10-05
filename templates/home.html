@@ -1,8 +1,60 @@
 {% extends 'base.html' %}
 {% block title %} Welcome | Tool Share {% endblock %}
 {% block content %}
-<div class="container">
-    <h1>Outward Facing Home Page</h1>
-    <p>Let me tell you why you need this app</p>
+<div id="hero" class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h2 class="h3 mb-5">Stop buying tools.</h2>
+            <h2 class="h3 mt-5 mb-5">Join your community in sharing your resources.</h2>
+            <div class="mt-5 container">
+                <p class="h5 mt-5 mb-5">✅ Help others around you.</p>
+                <p class="h5 mb-5">✅ Stop buying resources that are available in your area.</p>
+                <p class="h5">✅ Save money. Build local community.</p>
+            </div>
+            <div class="d-flex justify-content-center mt-5">
+                <a href="/register" class="btn btn-lg btn-primary" style="color:white;">Sign Up Free</a>
+            </div>
+        </div>
+        <div class="d-none d-md-block col-md-6">
+            <img class="img-fluid" src="/static/images/homepage/map-screen.png" alt="picture of map view">
+        </div>
+    </div>
+</div>
+<div id="second-section">
+    <div class="container pb-5">
+        <div class="d-flex flex-row justify-content-center">
+            <h2 class="h4 mt-5">What people are saying</h2> 
+        </div>
+        <div class="justify-content-center m-5 card-deck">
+            <div class="card text-center m-3">
+                <div class="card-body">
+                  <h5 class="card-title"><u>John S.</u></h5>
+                  <p class="card-text">This is my review of Tool Share. This product is legit and everyone should use it. Community.</p>
+                </div>
+            </div>
+            <div class="card text-center m-3">
+                <div class="card-body">
+                  <h5 class="card-title"><u>Tiffany H.</u></h5>
+                  <p class="card-text">This is my review of Tool Share. This product is legit and everyone should use it. Community.</p>
+                </div>
+            </div>
+            <div class="card text-center m-3">
+                <div class="card-body">
+                  <h5 class="card-title"><u>2 Chainz</u></h5>
+                  <p class="card-text">This is my review of Tool Share. This product is legit and everyone should use it. Community.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="third-section" class="row align-items-center justify-content-center">
+        <div class="card text-center m-5" style="background-color: #a0b7bc; max-width: 800px;">
+            <div class="card-body">
+                <h3 class="card-title">Tool Share is easy to use. The best part? No fees.</h3>
+                <a href="/register" class="btn btn-lg btn-primary" style="color:white;">Try it now</a>
+            </div>
+        </div>
+
 </div>
 {% endblock %}

@@ -12,6 +12,16 @@ body
     font-family: 'Open Sans', sans-serif;
 }
 
+/* HOMEPAGE STYLING */
+#second-section {
+    background-color: #a0b7bc;
+    min-height: 400px;
+}
+
+#third-section {
+    min-height: 400px;
+}
+
 /* MAP LIST STYLE HERE */
 #list-view {
     display: none;
