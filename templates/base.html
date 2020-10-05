@@ -60,6 +60,7 @@
 </header>
 
 <body>
+<div style="min-height: 100vh;">
     <!-- Flashing messages at the top of the body -->
     {% for category, msg in get_flashed_messages(with_categories=True) %}
         <div class="alert alert-{{category}}">{{ msg }}</div>
@@ -70,6 +71,7 @@
 
     <!-- JS Sheet -->
     <script src="/static/scripts.js"></script>
+</div>
 </body>
 <footer>
   <nav class="navbar sticky-bottom navbar-light bg-light">

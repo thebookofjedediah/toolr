@@ -7,8 +7,7 @@
     max-width: 200px;
 }
 
-body
-{
+body {
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -55,4 +54,10 @@ body
         z-index: 9;
         width: 20%; 
     }
+}
+
+
+/* TOOL DETAILS STYLING */
+.tool-card {
+    max-width: 400px;
 }

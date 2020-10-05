@@ -4,54 +4,61 @@
 
 {% set BODY = "I'm interested in your " %}
 
-<div class="container">
-    <h1>Information for, {{tool.name}}</h1>
-    <p>Available?: {{tool.available}}</p>
-    <p>Owned by: {{tool.owner.username}}</p>
-    <p>Location: {{tool.location_id}}</p>
-    <p>Name: {{tool.name}}</p>
-    <p>Description: {{tool.description}}</p>
-    {% if tool.owner.username == session["username"] %}
-    <form style="display:inline" action="/tools/{{tool.id}}/delete" method="POST">
-        <button class="btn btn-sm btn-danger"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-          </svg></button>
-    </form>
-    <a href="/tools/{{tool.id}}/update" class="btn btn-sm btn-secondary"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-    </svg></a>
-    {% else %}
-    <div class="dropdown show">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Email the Owner
-        </a>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" target="_blank" href="https://mail.google.com/mail/?view=cm&fs=1&to={{tool.owner.email}}&su={{tool.name}}&body={{BODY}}{{tool.name}}">
-                <span><img src="/../../static/images/gmail-logo.png" alt="gmail logo"></span>
-                Gmail
-            </a>
-            
-            <a class="dropdown-item" target="_blank" href="https://outlook.live.com/owa/#subject={{tool.name}}&body=BODY&to={{tool.owner.email}}&path=%2fmail%2faction%2fcompose">
-                <span><img src="/../../static/images/outlook-logo.png" alt="gmail logo"></span>
-                Outlook (Hotmail/Live)
-            </a>
-            
-            <a class="dropdown-item" target="_blank" href="http://compose.mail.yahoo.com/?to={{tool.owner.email}}&subj={{tool.name}}&body=BODY">
-                <span><img src="/../../static/images/yahoo-logo.png" alt="gmail logo"></span>
-                Yahoo
-            </a>
+<div class="container row align-items-center justify-content-center">
+      
+    <div class="card tool-card mt-5">
+        <img class="card-img-top"  src="{{tool.img_url}}" alt="Card image cap">
+        <div class="card-body">
+            <p>
+                {% if tool.available == True %}
+                <span class="badge badge-success">Available!</span>
+                {% else %}
+                <span class="badge badge-danger">Unavailable</span>
+                {% endif %}
+            </p>
+        <h5 class="card-title">{{tool.name}}</h5>
+        <p class="card-text">Location: {{tool.location_id}}</p>
+        <p class="card-text">Owned By: {{tool.owner.first_name}}</p>
+        <p class="card-text">Description: {{tool.description}}</p>
+        {% if tool.owner.username == session["username"] %}
+        <form style="display:inline" action="/tools/{{tool.id}}/delete" method="POST">
+            <button class="btn btn-sm btn-danger">Delete</button>
+        </form>
+        <a href="/tools/{{tool.id}}/update" class="btn btn-sm btn-secondary">Edit</a>
+        {% else %}
+            <!-- CONTACT BUTTON -->
+            <div class="dropdown show mt-5">
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Email the Owner
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" target="_blank" href="https://mail.google.com/mail/?view=cm&fs=1&to={{tool.owner.email}}&su={{tool.name}}&body={{BODY}}{{tool.name}}">
+                        <span><img src="/../../static/images/gmail-logo.png" alt="gmail logo"></span>
+                        Gmail
+                    </a>
+                    
+                    <a class="dropdown-item" target="_blank" href="https://outlook.live.com/owa/#subject={{tool.name}}&body=BODY&to={{tool.owner.email}}&path=%2fmail%2faction%2fcompose">
+                        <span><img src="/../../static/images/outlook-logo.png" alt="gmail logo"></span>
+                        Outlook (Hotmail/Live)
+                    </a>
+                    
+                    <a class="dropdown-item" target="_blank" href="http://compose.mail.yahoo.com/?to={{tool.owner.email}}&subj={{tool.name}}&body=BODY">
+                        <span><img src="/../../static/images/yahoo-logo.png" alt="gmail logo"></span>
+                        Yahoo
+                    </a>
 
-            <a class="dropdown-item" target="_blank" href="mailto:{{tool.owner.email}}">
-                <span><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
-                  </svg></span>
-                Other
-            </a>
+                    <a class="dropdown-item" target="_blank" href="mailto:{{tool.owner.email}}">
+                        <span><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                        </svg></span>
+                        Other
+                    </a>
+                </div>
+            </div>
+        {% endif %}
         </div>
-      </div>
-    {% endif %}
-
+    </div>
+    
 </div>
 
 {% endblock %}
