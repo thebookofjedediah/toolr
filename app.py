@@ -51,7 +51,14 @@ def get_tool_coords(tools):
     for z in zips:
         locations += f"&location={z},USA" #only works for USA currently, need to update model to be more dynamic
     
+
     res = requests.get(f"{BASE_URL}/batch?key={MAPQUEST_KEY}{locations}")
+    print("*********response**********")
+    print(res.status_code)
+    print("*********KEY**********")
+    print(MAPQUEST_KEY)
+    print("*********locations**********")
+    print(locations)
     data = res.json()
 
     postal_code_lat_long_map = {}
