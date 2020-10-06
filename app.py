@@ -31,13 +31,14 @@ connect_db(app)
 
 # GET LAT AND LNG FOR USER BASED ON ADDRESS/ZIP/ETC
 def get_map_center(address):
+    center = [38.8159, 76.7497]
 
     res = requests.get(f"{BASE_URL}/address", params={'key': MAPQUEST_KEY, 'location': address})
-
-    data = res.json()
-    lat = data["results"][0]['locations'][0]['latLng']['lat']
-    lng = data["results"][0]['locations'][0]['latLng']['lng']
-    center = [lat, lng]
+    if res:
+        data = res.json()
+        lat = data["results"][0]['locations'][0]['latLng']['lat']
+        lng = data["results"][0]['locations'][0]['latLng']['lng']
+        center = [lat, lng]
 
     return center
 
