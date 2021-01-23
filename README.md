@@ -1,10 +1,6 @@
 # Tool Share App
 Live URL: https://toolshare-jed.herokuapp.com/
 
-Test Username: jarnold
-
-Test Password: password
-
 ## About This App
 
 This application was built to encourage local community members to both share and borrow tools from those in their community. 
