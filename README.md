@@ -1,5 +1,4 @@
 # Tool Share App
-Live URL: https://toolshare-jed.herokuapp.com/
 
 ## About This App
 
